@@ -14,9 +14,9 @@
   <h1>People Ratings</h1>
   <div id="people"></div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+  <!-- Firebase compat SDKs (old API support) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
   <script>
     // Your Firebase config
@@ -32,11 +32,11 @@
     };
 
 
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase (compat mode)
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // People list (you can make this dynamic later)
+    // People list
     const peopleList = ["Alice", "Bob", "Charlie"];
 
     // Render people
@@ -59,10 +59,10 @@
     });
 
     // Change rating function
-    window.changeRating = function(name, delta) {
+    function changeRating(name, delta) {
       const ref = db.ref("ratings/" + name);
       ref.transaction(current => (current || 0) + delta);
-    };
+    }
   </script>
 </body>
 </html>
