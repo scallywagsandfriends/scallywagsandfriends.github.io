@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Rating System</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; padding: 20px; }
+    .person { background: white; padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; }
+    .name { flex: 1; font-weight: bold; }
+    button { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>People Ratings</h1>
+  <div id="people"></div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAct6mJxsbt9FUi8JXlNvi-nBu2AG7Z_J4",
+      authDomain: "humorelo.firebaseapp.com",
+      databaseURL: "https://humorelo-default-rtdb.firebaseio.com",
+      projectId: "humorelo",
+      storageBucket: "humorelo.firebasestorage.app",
+      messagingSenderId: "765285537342",
+      appId: "1:765285537342:web:d80667d9800c457ae3a36f",
+      measurementId: "G-Y5E2Z159ZX"
+    };
+
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // People list (you can make this dynamic later)
+    const peopleList = ["Alice", "Bob", "Charlie"];
+
+    // Render people
+    const container = document.getElementById("people");
+    peopleList.forEach(name => {
+      const div = document.createElement("div");
+      div.className = "person";
+      div.innerHTML = `
+        <span class="name">${name}</span>
+        <button onclick="changeRating('${name}', -1)">-</button>
+        <span id="${name}-rating">0</span>
+        <button onclick="changeRating('${name}', 1)">+</button>
+      `;
+      container.appendChild(div);
+
+      // Listen for updates
+      db.ref("ratings/" + name).on("value", snapshot => {
+        document.getElementById(`${name}-rating`).innerText = snapshot.val() ?? 0;
+      });
+    });
+
+    // Change rating function
+    window.changeRating = function(name, delta) {
+      const ref = db.ref("ratings/" + name);
+      ref.transaction(current => (current || 0) + delta);
+    };
+  </script>
+</body>
+</html>
