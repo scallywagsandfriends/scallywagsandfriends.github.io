@@ -20,8 +20,9 @@
       align-items: center; 
       transition: background 0.3s, color 0.3s;
     }
-    .name { flex: 1; font-weight: bold; }
-    button { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
+    .name { flex: 1; font-weight: bold; padding-left: 10px; }
+    button { margin: 0 5px; padding: 5px 10px; cursor: pointer; min-width: 30px; }
+    .rating { width: 30px; text-align: center; }
 
     /* Dark mode styles */
     body.dark {
@@ -66,7 +67,7 @@
     const container = document.getElementById("people");
     let ratingsData = {};
 
-    // Dark mode toggle logic
+    // Dark mode toggle
     const darkModeToggle = document.getElementById("darkModeToggle");
     if (localStorage.getItem("darkMode") === "true") {
       document.body.classList.add("dark");
@@ -76,7 +77,7 @@
       localStorage.setItem("darkMode", document.body.classList.contains("dark"));
     });
 
-    // Listen for all ratings
+    // Listen for ratings
     db.ref("ratings").on("value", snapshot => {
       ratingsData = snapshot.val() || {};
       renderList();
@@ -95,10 +96,10 @@
         const div = document.createElement("div");
         div.className = "person";
         div.innerHTML = `
-          <span class="name">${name}</span>
           <button onclick="changeRating('${name}', -1)">-</button>
-          <span id="${name}-rating">${ratingsData[name] || 0}</span>
+          <span class="rating" id="${name}-rating">${ratingsData[name] || 0}</span>
           <button onclick="changeRating('${name}', 1)">+</button>
+          <span class="name">${name}</span>
         `;
         container.appendChild(div);
       });
